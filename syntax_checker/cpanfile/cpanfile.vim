@@ -17,16 +17,13 @@ function! SyntaxCheckers_cpanfile_cpanfile_IsAvailable()
   return 0  " Failure
 endfunction
 
-function! s:ConstructCommand()
-  let l:parser_name = 'parse_cpanfile.pl'
-  let l:parser_path = shellescape(expand('<sfile>:p:h') . '/' . l:parser_name)
-
-  return 'perl ' . l:parser_path
-endfunction
+let s:parser_name   = 'parse_cpanfile.pl'
+let s:parse_command = 'perl ' . shellescape(expand('<sfile>:p:h') . '/' . s:parser_name)
 
 function! SyntaxCheckers_cpanfile_cpanfile_GetLocList()
-  let makeprg     = s:ConstructCommand() . ' ' . shellescape(expand('%'))
+  let makeprg     = s:parse_command . ' ' . shellescape(expand('%'))
   let errorformat = '%t;%f;%l;%m'
+  echo makeprg
 
   return SyntasticMake({ 'makeprg': makeprg, 'errorformat': errorformat })
 endfunction
