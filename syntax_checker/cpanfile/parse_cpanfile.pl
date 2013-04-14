@@ -12,8 +12,18 @@ $@ or exit(0);
 my $res = $@;
 
 my $type = 'E';    # <= Means Error
-my ( $file_name, $line, $err_msg ) =
-  $res =~ /failed: syntax error at (.*?) line (\d*?), (.*)/;
-$err_msg = 'syntax error: ' . $err_msg;
+my ( $err_msg_before, $file_name, $line, $err_msg_after ) =
+  $res =~ /failed: (.*) at (.*) line (\d*)(?:, |\.)?(.*)/;
+
+$err_msg_before = $err_msg_before || '';
+$err_msg_after  = $err_msg_after  || '';
+
+my $err_msg = 'syntax error: ';
+if ( $err_msg_before && $err_msg_after ) {
+    $err_msg .= "$err_msg_before, $err_msg_after";
+}
+else {
+    $err_msg .= "$err_msg_before$err_msg_after";
+}
 
 print "$type;$file_name;$line;$err_msg";
