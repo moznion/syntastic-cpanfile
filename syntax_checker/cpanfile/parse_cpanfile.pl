@@ -1,29 +1,41 @@
-#!/usr/bin/env perl
+#!perl
 
 use strict;
 use warnings;
 use utf8;
 use Module::CPANfile;
 
-my $file = $ARGV[0];
-eval { Module::CPANfile->load($file) };
-
+my $cpanfile = $ARGV[0];
+eval { Module::CPANfile->load($cpanfile) };
 $@ or exit(0);
-my $res = $@;
 
-my $type = 'E';    # <= Means Error
-my ( $err_msg_before, $file_name, $line, $err_msg_after ) =
-  $res =~ /failed: (.*) at (.*) line (\d*)(?:, |\.)?(.*)/;
+print format_errors($@);
 
-$err_msg_before = $err_msg_before || '';
-$err_msg_after  = $err_msg_after  || '';
+sub format_errors {
+    my ($raw_err_msg) = @_;
 
-my $err_msg = 'syntax error: ';
-if ( $err_msg_before && $err_msg_after ) {
-    $err_msg .= "$err_msg_before, $err_msg_after";
-}
-else {
-    $err_msg .= "$err_msg_before$err_msg_after";
+    my $err_type = 'E';    # <= Means ERROR
+    my ( $err_text_ahead, $file_name, $line, $err_text_rear ) =
+      $raw_err_msg =~ /failed: (.*) at (.*) line (\d*)(?:, |\.)?(.*)/;
+
+    my $err_text = format_error_text( $err_text_ahead, $err_text_rear );
+
+    return "$err_type;$file_name;$line;$err_text";
 }
 
-print "$type;$file_name;$line;$err_msg";
+sub format_error_text {
+    my ( $err_text_ahead, $err_text_rear ) = @_;
+
+    $err_text_ahead = $err_text_ahead || '';
+    $err_text_rear  = $err_text_rear  || '';
+
+    my $err_msg = 'syntax error: ';
+    if ( $err_text_ahead && $err_text_rear ) {
+        $err_msg .= "$err_text_ahead, $err_text_rear";
+    }
+    else {
+        $err_msg .= $err_text_ahead . $err_text_rear;
+    }
+
+    return $err_msg;
+}
