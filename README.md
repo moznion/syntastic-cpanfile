@@ -5,12 +5,17 @@ cpanfile syntax checker for [syntastic](https://github.com/scrooloose/syntastic)
 
 # How to install
 
-Copy syntax\_checker/cpanfile to the syntastic directory.  
+Add symbolic link to syntax\_checker/cpanfile  
 e.g.)
 
-    cp -R syntax_checker/cpanfile/ ~/.vim/bundle/syntastic/syntax_checkers/
+    (In syntastic-cpanfile directory;)
+    ln -s `pwd`/syntax_checker/cpanfile ~/.vim/bundle/syntastic/syntax_checkers/cpanfile
 
-And also you can use symbolic link. (I think, this way is better...)
+And also you can use a way to copy the directory. (Maybe this way is not good...)  
+e.g.)
+
+    (In syntastic-cpanfile directory;)
+    cp -R syntax_checker/cpanfile/ ~/.vim/bundle/syntastic/syntax_checkers/
 
 
 # Configuration and Environment
